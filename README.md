@@ -1,6 +1,6 @@
 # todo_list
 
-A new Flutter project.
+A new Flutter project to learn about lists, Dismissible itens, Snackbar and actions, io 
 
 ## Getting Started
 

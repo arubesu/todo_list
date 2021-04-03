@@ -31,6 +31,24 @@ class _HomeState extends State<Home> {
     });
   }
 
+  Future<Null> _refreshAction() async {
+    await Future.delayed(Duration(microseconds: 100));
+
+    setState(() {
+      _todoList.sort((a, b) {
+        if (a["done"] && !b["done"]) {
+          return 1;
+        }
+
+        if (!a["done"] && b["done"]) {
+          return -1;
+        }
+
+        return 0;
+      });
+    });
+  }
+
   void _addTodo() {
     var taskTodo = newTaskController.text;
 
@@ -67,10 +85,13 @@ class _HomeState extends State<Home> {
                 )
               ])),
           Expanded(
-              child: ListView.builder(
-                  padding: EdgeInsets.only(top: 10),
-                  itemCount: _todoList.length,
-                  itemBuilder: buildTodoItem))
+              child: RefreshIndicator(
+            onRefresh: _refreshAction,
+            child: ListView.builder(
+                padding: EdgeInsets.only(top: 10),
+                itemCount: _todoList.length,
+                itemBuilder: buildTodoItem),
+          ))
         ]));
   }
 
@@ -103,7 +124,7 @@ class _HomeState extends State<Home> {
         setState(() {
           _lastRemovedTaskIndex = index;
           _lastRemovedTask = _todoList[index];
-          _todoList.removeAt(index);
+          _todoList.removeAt(_lastRemovedTaskIndex);
         });
 
         _saveData();
@@ -114,7 +135,7 @@ class _HomeState extends State<Home> {
               label: "undo",
               onPressed: () {
                 setState(() {
-                  _todoList.insert(index, _lastRemovedTask);
+                  _todoList.insert(_lastRemovedTaskIndex, _lastRemovedTask);
                   _saveData();
                 });
               },
