@@ -1,5 +1,42 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 
 void main() {
-  runApp(MaterialApp());
+  runApp(MaterialApp(home: Home()));
+}
+
+class Home extends StatefulWidget {
+  @override
+  _HomeState createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
+  List _todoList = [];
+
+  @override
+  Widget build(BuildContext context) {
+    return Container();
+  }
+
+  Future<File> _getFile() async {
+    final directory = await getApplicationDocumentsDirectory();
+    return File("${directory.path}/todo_data.json");
+  }
+
+  Future<File> _saveData() async {
+    var data = json.encode(_todoList);
+    final file = await _getFile();
+    return file.writeAsString(data);
+  }
+
+  Future<String> _readData() async {
+    var file = await _getFile();
+
+    try {
+      return file.readAsString();
+    } catch (e) {}
+  }
 }
